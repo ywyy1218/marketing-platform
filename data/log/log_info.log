@@ -1,0 +1,12 @@
+24-06-29.20:18:58.005 [main            ] INFO  Application            - Starting Application using Java 1.8.0_71 on LAPTOP-O2RFCJHF with PID 1904 (D:\idea\marketing-platform\marketing-platform-app\target\classes started by 17725 in D:\idea\marketing-platform)
+24-06-29.20:18:58.008 [main            ] INFO  Application            - The following 1 profile is active: "dev"
+24-06-29.20:18:58.514 [main            ] WARN  ClassPathMapperScanner - No MyBatis mapper was found in '[cn.ywyy]' package. Please check your configuration.
+24-06-29.20:18:58.820 [main            ] INFO  TomcatWebServer        - Tomcat initialized with port(s): 8091 (http)
+24-06-29.20:18:58.826 [main            ] INFO  Http11NioProtocol      - Initializing ProtocolHandler ["http-nio-8091"]
+24-06-29.20:18:58.826 [main            ] INFO  StandardService        - Starting service [Tomcat]
+24-06-29.20:18:58.827 [main            ] INFO  StandardEngine         - Starting Servlet engine: [Apache Tomcat/9.0.75]
+24-06-29.20:18:58.946 [main            ] INFO  [/]                    - Initializing Spring embedded WebApplicationContext
+24-06-29.20:18:58.946 [main            ] INFO  ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 897 ms
+24-06-29.20:18:59.364 [main            ] INFO  Http11NioProtocol      - Starting ProtocolHandler ["http-nio-8091"]
+24-06-29.20:18:59.427 [main            ] INFO  TomcatWebServer        - Tomcat started on port(s): 8091 (http) with context path ''
+24-06-29.20:18:59.435 [main            ] INFO  Application            - Started Application in 1.97 seconds (JVM running for 3.293)
