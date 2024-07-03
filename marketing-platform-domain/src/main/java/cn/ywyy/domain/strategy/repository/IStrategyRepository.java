@@ -15,7 +15,7 @@ public interface IStrategyRepository {
 
     List<StrategyAwardEntity> queryStrategyAwardList(Long strategyId);
 
-    void storeStrategyAwardSearchRateTable(Long strategyId, Integer rateRange, Map<Integer, Integer> strategyAwardSearchRateTable);
+    void storeStrategyAwardSearchRateTable(String key, Integer rateRange, Map<Integer, Integer> strategyAwardSearchRateTable);
 
     Integer getStrategyAwardAssemble(Long strategyId, Integer rateKey);
 

@@ -1,6 +1,7 @@
 package cn.ywyy.test.domain;
 
 import cn.ywyy.domain.strategy.service.armory.IStrategyArmory;
+import cn.ywyy.domain.strategy.service.armory.IStrategyDispatch;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,10 +15,12 @@ import javax.annotation.Resource;
  */
 @SpringBootTest
 @Slf4j
-public class StrategyArmoryTest {
+public class StrategyArmoryDispatchTest {
 
     @Resource
     private IStrategyArmory strategyArmory;
+    @Resource
+    private IStrategyDispatch strategyDispatch;
 
     @Test
     public void test_strategyArmory() {
@@ -27,9 +30,9 @@ public class StrategyArmoryTest {
 
     @Test
     public void test_getAssembleRandomVal() {
-        log.info("测试结果：{} - 奖品ID值", strategyArmory.getRandomAwardId(100002L));
-        log.info("测试结果：{} - 奖品ID值", strategyArmory.getRandomAwardId(100002L));
-        log.info("测试结果：{} - 奖品ID值", strategyArmory.getRandomAwardId(100002L));
+        log.info("测试结果：{} - 奖品ID值", strategyDispatch.getRandomAwardId(100002L));
+        log.info("测试结果：{} - 奖品ID值", strategyDispatch.getRandomAwardId(100002L));
+        log.info("测试结果：{} - 奖品ID值", strategyDispatch.getRandomAwardId(100002L));
     }
 
 }
