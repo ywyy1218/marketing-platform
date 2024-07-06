@@ -27,9 +27,13 @@ public class RaffleStrategyTest {
     @Resource
     private RuleWeightLogicFilter ruleWeightLogicFilter;
 
+    /**
+     * ReflectionTestUtils是Spring Framework提供的一个实用工具类，用于在测试时访问和修改非公开字段和方法。
+     * 你可以使用ReflectionTestUtils设置类的私有字段。确保ruleWeightLogicFilter已经实例化，并且字段名和类型是正确的。
+     */
     @BeforeEach
     public void setUp() {
-        ReflectionTestUtils.setField(ruleWeightLogicFilter, "userScore", 45000L);
+        ReflectionTestUtils.setField(ruleWeightLogicFilter, "userScore", 4500L);
     }
 
     @Test

@@ -16,6 +16,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RaffleFactorEntity {
 
+    /** 用户ID */
     private String userId;
+    /** 抽奖策略ID */
     private Long strategyId;
 }

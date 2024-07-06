@@ -32,7 +32,7 @@ public class RuleBlackListLogicFilter implements ILogicFilter<RuleActionEntity.R
 
         String userId = ruleMatterEntity.getUserId();
 
-        // 查询规则值配置
+        // 查询规则值配置，数据库中 rule_value 字段值
         String ruleValue = repository.queryStrategyRuleValue(ruleMatterEntity.getStrategyId(), ruleMatterEntity.getAwardId(), ruleMatterEntity.getRuleModel());
         String[] splitRuleValue  = ruleValue.split(Constants.COLON);
         Integer awardId = Integer.parseInt(splitRuleValue[0]);

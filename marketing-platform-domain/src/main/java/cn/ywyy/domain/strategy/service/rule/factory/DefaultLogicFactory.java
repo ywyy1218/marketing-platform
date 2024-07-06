@@ -14,14 +14,24 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author: wjx
- * @description: 规则工厂
+ * @description: 默认的规则工厂
  * @create 2024/7/4 11:09
+ */
+
+/**
+ * 该类 DefaultLogicFactory 主要用于初始化并管理一组实现了 ILogicFilter 接口的规则过滤器。
+ * 这些过滤器通过 LogicStrategy 注解来标识，并被存储在一个 ConcurrentHashMap 中，以便根据特定的逻辑模式代码快速检索。
  */
 @Service
 public class DefaultLogicFactory {
 
     public Map<String, ILogicFilter<?>> logicFilterMap = new ConcurrentHashMap<>();
 
+    /**
+     * 这段代码的作用是根据每个逻辑过滤器类上的 LogicStrategy 注解，将抽奖规则类型(rule_model)与其对应的逻辑过滤器关联起来，存储在 logicFilterMap 中。
+     * 这样可以通过 LogicModel 快速查找到对应的逻辑过滤器实体类。
+     * @param logicFilters
+     */
     public DefaultLogicFactory(List<ILogicFilter<?>> logicFilters) {
         logicFilters.forEach(logic -> {
             LogicStrategy strategy = AnnotationUtils.findAnnotation(logic.getClass(), LogicStrategy.class);
