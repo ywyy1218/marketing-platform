@@ -16,7 +16,7 @@
 
     <select id="queryStrategyRuleList" resultMap="dataMap">
         select strategy_id
-        from stratery_rule
+        from strategy_rule
         limit 10
     </select>
 

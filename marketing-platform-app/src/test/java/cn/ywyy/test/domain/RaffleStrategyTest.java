@@ -3,6 +3,8 @@ package cn.ywyy.test.domain;
 import cn.ywyy.domain.strategy.model.entity.RaffleAwardEntity;
 import cn.ywyy.domain.strategy.model.entity.RaffleFactorEntity;
 import cn.ywyy.domain.strategy.service.IRaffleStrategy;
+import cn.ywyy.domain.strategy.service.armory.IStrategyArmory;
+import cn.ywyy.domain.strategy.service.rule.impl.RuleLockLogicFilter;
 import cn.ywyy.domain.strategy.service.rule.impl.RuleWeightLogicFilter;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +27,13 @@ public class RaffleStrategyTest {
     private IRaffleStrategy raffleStrategy;
 
     @Resource
+    private IStrategyArmory strategyArmory;
+
+    @Resource
     private RuleWeightLogicFilter ruleWeightLogicFilter;
+
+    @Resource
+    private RuleLockLogicFilter ruleLockLogicFilter;
 
     /**
      * ReflectionTestUtils是Spring Framework提供的一个实用工具类，用于在测试时访问和修改非公开字段和方法。
@@ -33,7 +41,14 @@ public class RaffleStrategyTest {
      */
     @BeforeEach
     public void setUp() {
+        // 策略装配 100001、100002、100003
+        log.info("测试结果：{}", strategyArmory.assembleLotteryStrategy(100001L));
+        log.info("测试结果：{}", strategyArmory.assembleLotteryStrategy(100002L));
+        log.info("测试结果：{}", strategyArmory.assembleLotteryStrategy(100003L));
+
+        // 通过反射 mock 规则中的值
         ReflectionTestUtils.setField(ruleWeightLogicFilter, "userScore", 4500L);
+        ReflectionTestUtils.setField(ruleLockLogicFilter, "userRaffleCount", 10L);
     }
 
     @Test
@@ -61,5 +76,23 @@ public class RaffleStrategyTest {
         log.info("请求参数：{}", JSON.toJSONString(raffleFactorEntity));
         log.info("测试结果：{}", JSON.toJSONString(raffleAwardEntity));
     }
+
+    /**
+     * 次数错校验，抽奖n次后解锁。100003 策略，你可以通过调整 @Before 的 setUp 方法中个人抽奖次数来验证。比如最开始设置0，之后设置10
+     * ReflectionTestUtils.setField(ruleLockLogicFilter, "userRaffleCount", 10L);
+     */
+    @Test
+    public void test_raffle_center_rule_lock(){
+        RaffleFactorEntity raffleFactorEntity = RaffleFactorEntity.builder()
+                .userId("wjx")
+                .strategyId(100003L)
+                .build();
+
+        RaffleAwardEntity raffleAwardEntity = raffleStrategy.performRaffle(raffleFactorEntity);
+
+        log.info("请求参数：{}", JSON.toJSONString(raffleFactorEntity));
+        log.info("测试结果：{}", JSON.toJSONString(raffleAwardEntity));
+    }
+
 
 }
