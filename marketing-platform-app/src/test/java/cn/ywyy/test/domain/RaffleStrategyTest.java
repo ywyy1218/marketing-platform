@@ -4,8 +4,8 @@ import cn.ywyy.domain.strategy.model.entity.RaffleAwardEntity;
 import cn.ywyy.domain.strategy.model.entity.RaffleFactorEntity;
 import cn.ywyy.domain.strategy.service.IRaffleStrategy;
 import cn.ywyy.domain.strategy.service.armory.IStrategyArmory;
-import cn.ywyy.domain.strategy.service.rule.impl.RuleLockLogicFilter;
-import cn.ywyy.domain.strategy.service.rule.impl.RuleWeightLogicFilter;
+import cn.ywyy.domain.strategy.service.rule.chain.impl.RuleWeightLogicChain;
+import cn.ywyy.domain.strategy.service.rule.filter.impl.RuleLockLogicFilter;
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +30,7 @@ public class RaffleStrategyTest {
     private IStrategyArmory strategyArmory;
 
     @Resource
-    private RuleWeightLogicFilter ruleWeightLogicFilter;
+    private RuleWeightLogicChain ruleWeightLogicChain;
 
     @Resource
     private RuleLockLogicFilter ruleLockLogicFilter;
@@ -47,15 +47,15 @@ public class RaffleStrategyTest {
         log.info("测试结果：{}", strategyArmory.assembleLotteryStrategy(100003L));
 
         // 通过反射 mock 规则中的值
-        ReflectionTestUtils.setField(ruleWeightLogicFilter, "userScore", 4500L);
-        ReflectionTestUtils.setField(ruleLockLogicFilter, "userRaffleCount", 10L);
+        ReflectionTestUtils.setField(ruleWeightLogicChain, "userScore", 4500L);
+        ReflectionTestUtils.setField(ruleLockLogicFilter, "userRaffleCount", 0L);
     }
 
     @Test
     public void test_performRaffle() {
         RaffleFactorEntity raffleFactorEntity = RaffleFactorEntity.builder()
                 .userId("wjx")
-                .strategyId(100001L)
+                .strategyId(100003L)
                 .build();
 
         RaffleAwardEntity raffleAwardEntity = raffleStrategy.performRaffle(raffleFactorEntity);
@@ -68,7 +68,7 @@ public class RaffleStrategyTest {
     public void test_performRaffle_blacklist() {
         RaffleFactorEntity raffleFactorEntity = RaffleFactorEntity.builder()
                 .userId("user003")  // 黑名单用户 user001,user002,user003
-                .strategyId(100001L)
+                .strategyId(100003L)
                 .build();
 
         RaffleAwardEntity raffleAwardEntity = raffleStrategy.performRaffle(raffleFactorEntity);

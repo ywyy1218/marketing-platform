@@ -1,12 +1,13 @@
-package cn.ywyy.domain.strategy.service.rule.impl;
+/*
+package cn.ywyy.domain.strategy.service.rule.filter.impl;
 
 import cn.ywyy.domain.strategy.model.entity.RuleActionEntity;
 import cn.ywyy.domain.strategy.model.entity.RuleMatterEntity;
 import cn.ywyy.domain.strategy.model.vo.RuleLogicCheckTypeVO;
 import cn.ywyy.domain.strategy.repository.IStrategyRepository;
 import cn.ywyy.domain.strategy.service.annotation.LogicStrategy;
-import cn.ywyy.domain.strategy.service.rule.ILogicFilter;
-import cn.ywyy.domain.strategy.service.rule.factory.DefaultLogicFactory;
+import cn.ywyy.domain.strategy.service.rule.filter.ILogicFilter;
+import cn.ywyy.domain.strategy.service.rule.filter.factory.DefaultLogicFactory;
 import cn.ywyy.types.common.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -14,11 +15,13 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.*;
 
+*/
 /**
  * @author: wjx
  * @description:
  * @create 2024/7/4 14:18
- */
+ *//*
+
 @Slf4j
 @Component
 @LogicStrategy(logicMode = DefaultLogicFactory.LogicModel.RULE_WIGHT)
@@ -29,14 +32,16 @@ public class RuleWeightLogicFilter implements ILogicFilter<RuleActionEntity.Raff
 
     private Long userScore = 4500L;
 
-    /**
+    */
+/**
      * 权重规则过滤；
      * 1. 权重规则格式；4000:102,103,104,105 5000:102,103,104,105,106,107 6000:102,103,104,105,106,107,108,109
      * 2. 解析数据格式；判断哪个范围符合用户的特定抽奖范围
      *
      * @param ruleMatterEntity 规则物料实体对象
      * @return 规则过滤结果
-     */
+     *//*
+
 
     @Override
     public RuleActionEntity<RuleActionEntity.RaffleBeforeEntity> filter(RuleMatterEntity ruleMatterEntity) {
@@ -99,3 +104,4 @@ public class RuleWeightLogicFilter implements ILogicFilter<RuleActionEntity.Raff
         return ruleValueMap;
     }
 }
+*/
