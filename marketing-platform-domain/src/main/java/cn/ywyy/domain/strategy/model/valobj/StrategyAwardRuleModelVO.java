@@ -1,4 +1,4 @@
-package cn.ywyy.domain.strategy.model.vo;
+package cn.ywyy.domain.strategy.model.valobj;
 
 import cn.ywyy.domain.strategy.service.rule.filter.factory.DefaultLogicFactory;
 import cn.ywyy.types.common.Constants;

@@ -9,7 +9,7 @@ import java.util.Map;
 
 /**
  * @author: wjx
- * @description: 默认工厂
+ * @description: 默认规则责任链工厂
  * @create 2024/7/8 16:51
  */
 @Service
