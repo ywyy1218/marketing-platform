@@ -7,6 +7,7 @@ public class Constants {
     public static final String COLON = ":";
 
     public static class  RedisKey {
+        public static String RULE_TREE_VO_KEY = "RULE_TREE_VO_KEY";
         public static String STRATEGY_KEY = "marketing_platform_strategy_key_";
         public static String STRATEGY_AWARD_KEY = "marketing_platform_strategy_award_key_";
         public static String STRATEGY_RATE_TABLE_KEY = "marketing_platform_strategy_rate_table_key_";

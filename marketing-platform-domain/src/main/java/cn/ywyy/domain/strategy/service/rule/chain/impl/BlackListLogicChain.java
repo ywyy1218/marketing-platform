@@ -2,6 +2,7 @@ package cn.ywyy.domain.strategy.service.rule.chain.impl;
 
 import cn.ywyy.domain.strategy.repository.IStrategyRepository;
 import cn.ywyy.domain.strategy.service.rule.chain.AbstractLogicChain;
+import cn.ywyy.domain.strategy.service.rule.chain.factory.DefaultChainFactory;
 import cn.ywyy.types.common.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -21,15 +22,11 @@ public class BlackListLogicChain extends AbstractLogicChain {
     private IStrategyRepository repository;
 
     @Override
-    public Integer logic(String userId, Long strategyId) {
+    public DefaultChainFactory.StrategyAwardVO logic(String userId, Long strategyId) {
         log.info("抽奖责任链-黑名单开始 userId: {} strategyId: {} ruleModel: {}", userId, strategyId, ruleModel());
 
         // 查询规则值配置，数据库中 rule_value 字段值
         String ruleValue = repository.queryStrategyRuleValue(strategyId, ruleModel());
-        if (ruleValue == null) {
-            log.info("异常！请查看rule_values的值");
-            return next().logic(userId, strategyId);
-        }
         String[] splitRuleValue  = ruleValue.split(Constants.COLON);
         Integer awardId = Integer.parseInt(splitRuleValue[0]);
 
@@ -39,7 +36,10 @@ public class BlackListLogicChain extends AbstractLogicChain {
         for (String userBlackId : userBlackIds) {
             if (userId.equals(userBlackId)){
                 log.info("抽奖责任链-黑名单接管 userId: {} strategyId: {} ruleModel: {} awardId: {}", userId, strategyId, ruleModel(), awardId);
-                return awardId;
+                return DefaultChainFactory.StrategyAwardVO.builder()
+                        .awardId(awardId)
+                        .logicModel(ruleModel())
+                        .build();
             }
         }
 
@@ -50,6 +50,6 @@ public class BlackListLogicChain extends AbstractLogicChain {
 
     @Override
     protected String ruleModel() {
-        return "rule_blacklist";
+        return DefaultChainFactory.LogicModel.RULE_BLACKLIST.getCode();
     }
 }

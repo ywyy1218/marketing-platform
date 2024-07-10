@@ -3,6 +3,7 @@ package cn.ywyy.domain.strategy.repository;
 import cn.ywyy.domain.strategy.model.entity.StrategyAwardEntity;
 import cn.ywyy.domain.strategy.model.entity.StrategyEntity;
 import cn.ywyy.domain.strategy.model.entity.StrategyRuleEntity;
+import cn.ywyy.domain.strategy.model.valobj.RuleTreeVO;
 import cn.ywyy.domain.strategy.model.valobj.StrategyAwardRuleModelVO;
 
 import java.util.List;
@@ -35,5 +36,7 @@ public interface IStrategyRepository {
     String queryStrategyRuleValue(Long strategyId, String ruleModel);
 
     StrategyAwardRuleModelVO queryStrategyAwardRuleModel(Long strategyId, Integer awardId);
+
+    RuleTreeVO queryRuleTreeVOByTreeId(String treeId);
 }
 

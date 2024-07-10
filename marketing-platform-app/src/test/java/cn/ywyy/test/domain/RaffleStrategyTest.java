@@ -5,7 +5,7 @@ import cn.ywyy.domain.strategy.model.entity.RaffleFactorEntity;
 import cn.ywyy.domain.strategy.service.IRaffleStrategy;
 import cn.ywyy.domain.strategy.service.armory.IStrategyArmory;
 import cn.ywyy.domain.strategy.service.rule.chain.impl.RuleWeightLogicChain;
-import cn.ywyy.domain.strategy.service.rule.filter.impl.RuleLockLogicFilter;
+
 import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,8 +32,6 @@ public class RaffleStrategyTest {
     @Resource
     private RuleWeightLogicChain ruleWeightLogicChain;
 
-    @Resource
-    private RuleLockLogicFilter ruleLockLogicFilter;
 
     /**
      * ReflectionTestUtils是Spring Framework提供的一个实用工具类，用于在测试时访问和修改非公开字段和方法。
@@ -43,19 +41,20 @@ public class RaffleStrategyTest {
     public void setUp() {
         // 策略装配 100001、100002、100003
         log.info("测试结果：{}", strategyArmory.assembleLotteryStrategy(100001L));
-        log.info("测试结果：{}", strategyArmory.assembleLotteryStrategy(100002L));
-        log.info("测试结果：{}", strategyArmory.assembleLotteryStrategy(100003L));
+//        log.info("测试结果：{}", strategyArmory.assembleLotteryStrategy(100002L));
+//        log.info("测试结果：{}", strategyArmory.assembleLotteryStrategy(100003L));
+        log.info("测试结果：{}", strategyArmory.assembleLotteryStrategy(100006L));
 
         // 通过反射 mock 规则中的值
         ReflectionTestUtils.setField(ruleWeightLogicChain, "userScore", 4500L);
-        ReflectionTestUtils.setField(ruleLockLogicFilter, "userRaffleCount", 0L);
+
     }
 
     @Test
     public void test_performRaffle() {
         RaffleFactorEntity raffleFactorEntity = RaffleFactorEntity.builder()
                 .userId("wjx")
-                .strategyId(100003L)
+                .strategyId(100001L)
                 .build();
 
         RaffleAwardEntity raffleAwardEntity = raffleStrategy.performRaffle(raffleFactorEntity);
