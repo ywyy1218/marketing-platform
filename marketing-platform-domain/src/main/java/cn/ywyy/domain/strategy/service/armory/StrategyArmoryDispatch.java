@@ -4,6 +4,7 @@ import cn.ywyy.domain.strategy.model.entity.StrategyAwardEntity;
 import cn.ywyy.domain.strategy.model.entity.StrategyEntity;
 import cn.ywyy.domain.strategy.model.entity.StrategyRuleEntity;
 import cn.ywyy.domain.strategy.repository.IStrategyRepository;
+import cn.ywyy.types.common.Constants;
 import cn.ywyy.types.enums.ResponseCode;
 import cn.ywyy.types.exception.AppException;
 import lombok.extern.slf4j.Slf4j;
@@ -47,9 +48,17 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
     public boolean assembleLotteryStrategy(Long strategyId) {
         // 1. 查询策略配置
         List<StrategyAwardEntity> strategyAwardEntities = repository.queryStrategyAwardList(strategyId);
-        // 没有对应的策略，直接但会false
+        // 没有对应的策略，直接返回false
         if (strategyAwardEntities == null || strategyAwardEntities.isEmpty()) return false;
 
+        // 缓存奖品库存信息 【用于decr扣减库存使用】
+        for (StrategyAwardEntity strategyAward : strategyAwardEntities) {
+            Integer awardId = strategyAward.getAwardId();
+            Integer awardCount = strategyAward.getAwardCount();
+            cacheStrategyAwardCount(strategyId, awardId, awardCount);
+        }
+
+        // 默认装配配置
         assembleLotteryStrategy(String.valueOf(strategyId), strategyAwardEntities);
 
         // 2. 权重策略配置 - 适用于 rule_weight 权重规则配置
@@ -74,6 +83,11 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
             assembleLotteryStrategy(String.valueOf(strategyId).concat("_").concat(key), strategyAwardEntities);
         }
         return true;
+    }
+
+    private void cacheStrategyAwardCount(Long strategyId, Integer awardId, Integer awardCount) {
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY + strategyId + Constants.UNDERLINE + awardId;
+        repository.cacheStrategyAwardCount(cacheKey, awardCount);
     }
 
 
@@ -132,6 +146,12 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
         int rateRange = repository.getRateRange(key);
         // 通过生成的随机值，获取概率值奖品查找表的结果
         return repository.getStrategyAwardAssemble(key, new SecureRandom().nextInt(rateRange));
+    }
+
+    @Override
+    public Boolean subtractionAwardStock(Long strategyId, Integer awardId) {
+        String cacheKey = Constants.RedisKey.STRATEGY_AWARD_COUNT_KEY + strategyId + Constants.UNDERLINE + awardId;
+        return repository.subtractionAwardStock(cacheKey);
     }
 
 }
