@@ -9,9 +9,10 @@ public class Constants {
 
     public static class  RedisKey {
         public static final String STRATEGY_AWARD_COUNT_QUEUE_KEY = "strategy_award_count_queue_key_";
+        public static final String STRATEGY_AWARD_KEY = "marketing_platform_strategy_award_key_";
         public static String RULE_TREE_VO_KEY = "rule_tree_vo_key_";
         public static String STRATEGY_KEY = "marketing_platform_strategy_key_";
-        public static String STRATEGY_AWARD_KEY = "marketing_platform_strategy_award_key_";
+        public static String STRATEGY_AWARD_LIST_KEY = "marketing_platform_strategy_award_list_key_";
         public static String STRATEGY_RATE_TABLE_KEY = "marketing_platform_strategy_rate_table_key_";
         public static String STRATEGY_RATE_RANGE_KEY = "marketing_platform_strategy_rate_range_key_";
         public static String STRATEGY_AWARD_COUNT_KEY = "strategy_award_count_key_";

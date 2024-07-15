@@ -13,6 +13,7 @@
         <module>marketing-platform-trigger</module>
         <module>marketing-platform-infrastructure</module>
         <module>marketing-platform-types</module>
+        <module>marketing-platform-api</module>
     </modules>
 
     <repositories>
@@ -39,10 +40,10 @@
 
     <developers>
         <developer>
-            <name>xiaofuge</name>
-            <email>184172133@qq.com</email>
-            <organization>fuzhengwei</organization>
-            <organizationUrl>https://github.com/fuzhengwei</organizationUrl>
+            <name>ywyy</name>
+            <email>ywyy1218@163.com</email>
+            <organization>ywyy1218</organization>
+            <organizationUrl>https://github.com/ywyy1218</organizationUrl>
         </developer>
     </developers>
 

@@ -36,6 +36,11 @@
             <groupId>cn.ywyy</groupId>
             <artifactId>marketing-platform-domain</artifactId>
         </dependency>
+        <dependency>
+            <groupId>cn.ywyy</groupId>
+            <artifactId>marketing-platform-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>
