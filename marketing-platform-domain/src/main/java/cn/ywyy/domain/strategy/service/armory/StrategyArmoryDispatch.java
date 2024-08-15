@@ -22,21 +22,6 @@ import java.util.*;
  * @create 2024/7/2 13:08
  */
 
-/**
- * 策略装配库(兵工厂)，负责初始化策略计算；
- *
- * 1.查询策略配置
- * 2.获取最小概率值
- * 3.获取概率值总和
- * 4.用 1 % 0.0001 获得概率范围，百分位、千分位、万分位
- * 5.生成策略奖品概率查找表「这里指需要在list集合中，存放上对应的奖品占位即可，占位越多等于概率越高」
- * 6.对存储的奖品进行乱序操作。避免顺序生成的随机数前面是固定的奖品。
- * 7.生成出Map集合，key值，对应的就是后续的概率值。通过概率来获得对应的奖品ID
- * 8.存放到 Redis
- *
- *
- * 注意，这里调用的 IStrategyRepository 由仓储层进行实现。
- */
 @Service
 @Slf4j
 public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatch {
@@ -59,7 +44,9 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
         }
 
         // 默认装配配置
-        assembleLotteryStrategy(String.valueOf(strategyId), strategyAwardEntities);
+        if (!assembleLotteryStrategy(String.valueOf(strategyId), strategyAwardEntities)) {
+            return false;
+        }
 
         // 2. 权重策略配置 - 适用于 rule_weight 权重规则配置
         StrategyEntity strategyEntity = repository.queryStrategyEntityByStrategyId(strategyId);
@@ -80,7 +67,7 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
             List<Integer> ruleWeightValues = ruleWeightValueMap.get(key);
             List<StrategyAwardEntity> strategyAwardEntitiesClone = new ArrayList<>(strategyAwardEntities);
             strategyAwardEntitiesClone.removeIf(entity -> !ruleWeightValues.contains(entity.getAwardId()));
-            assembleLotteryStrategy(String.valueOf(strategyId).concat("_").concat(key), strategyAwardEntities);
+            assembleLotteryStrategy(String.valueOf(strategyId).concat("_").concat(key), strategyAwardEntitiesClone);
         }
         return true;
     }
@@ -90,23 +77,32 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
         repository.cacheStrategyAwardCount(cacheKey, awardCount);
     }
 
-
-    private void assembleLotteryStrategy(String key, List<StrategyAwardEntity> strategyAwardEntities){
+    /**
+     * 计算公式；
+     * 1. 找到范围内最小的概率值，比如 0.1、0.02、0.003，需要找到的值是 0.003
+     * 2. 基于1找到的最小值，0.003 就可以计算出百分比、千分比的整数值。这里就是1000
+     * 3. 那么「概率 * 1000」分别占比100个、20个、3个，总计是123个
+     * 4. 后续的抽奖就用123作为随机数的范围值，生成的值100个都是0.1概率的奖品、20个是概率0.02的奖品、最后是3个是0.003的奖品。
+     */
+    private boolean assembleLotteryStrategy(String key, List<StrategyAwardEntity> strategyAwardEntities){
         // 1. 获取最小概率值
         BigDecimal minAwardRate = strategyAwardEntities.stream()
                 .map(StrategyAwardEntity::getAwardRate)
                 .min(BigDecimal::compareTo)
                 .orElse(BigDecimal.ZERO);
 
-        // 2. 获取概率值总和
-        BigDecimal totalAwardRate = strategyAwardEntities.stream()
-                .map(StrategyAwardEntity::getAwardRate)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        // 对于非常小的概率值，可能会导致最终的概率表非常大。
+        // 考虑到这种情况，可能需要设定一个最小阈值，或者对极小的概率值进行特殊处理（如归零或者使用其他方式表示）。
+        int scale = minAwardRate.stripTrailingZeros().scale();
+        if (scale > 4) {
+            log.error("概率精度超出阈值，请修改");
+            return false;
+        }
 
-        // 3. 用 1 / 0.0001 获得概率范围，百分位、千分位、万分位
-        BigDecimal rateRange = totalAwardRate.divide(minAwardRate, 0, RoundingMode.CEILING);
+        // 2. 获得概率范围，百分位、千分位、万分位 (stripTrailingZeros()用于去除末尾的0)
+        BigDecimal rateRange = BigDecimal.valueOf(Math.pow(10, scale));
 
-        // 4. 生成策略奖品概率查找表「这里指需要在list集合中，存放上对应的奖品占位即可，占位越多等于概率越高」
+        // 3. 生成策略奖品概率查找表「这里指需要在list集合中，存放上对应的奖品占位即可，占位越多等于概率越高」
         List<Integer> strategyAwardSearchRateTables = new ArrayList<>(rateRange.intValue());
         for (StrategyAwardEntity strategyAward : strategyAwardEntities) {
             Integer awardId = strategyAward.getAwardId();
@@ -117,19 +113,21 @@ public class StrategyArmoryDispatch implements IStrategyArmory, IStrategyDispatc
             }
         }
 
-        // 5. 对存储的奖品进行乱序操作
+        // 4. 对存储的奖品进行乱序操作
         Collections.shuffle(strategyAwardSearchRateTables);
 
-        // 6. 生成出Map集合，key值，对应的就是后续的概率值。通过概率来获得对应的奖品ID
+        // 5. 生成出Map集合，key值，对应的就是后续的概率值。通过概率来获得对应的奖品ID
         Map<Integer, Integer> shuffleStrategyAwardSearchRateTable = new LinkedHashMap<>();
         for (int i = 0; i < strategyAwardSearchRateTables.size(); i++) {
             shuffleStrategyAwardSearchRateTable.put(i, strategyAwardSearchRateTables.get(i));
         }
 
-        // 7. 存放到 Redis
+        // 6. 存放到 Redis
         repository.storeStrategyAwardSearchRateTable(key, shuffleStrategyAwardSearchRateTable.size(), shuffleStrategyAwardSearchRateTable);
 
+        return true;
     }
+
 
     @Override
     public Integer getRandomAwardId(Long strategyId) {

@@ -12,6 +12,9 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+/*
+  类可以通过泛型来指定其具体的行为或状态，支持不同的规则动作实体对应不同的抽奖阶段信息。
+ */
 public class RuleActionEntity <T extends RuleActionEntity.RaffleEntity> {
 
     private String code = RuleLogicCheckTypeVO.ALLOW.getCode();
@@ -27,7 +30,7 @@ public class RuleActionEntity <T extends RuleActionEntity.RaffleEntity> {
     }
 
     // 抽奖之前
-    @EqualsAndHashCode(callSuper = true)
+    @EqualsAndHashCode(callSuper = true) // 确保继承关系中的 equals 和 hashCode 方法正确工作
     @Data
     @Builder
     @AllArgsConstructor
