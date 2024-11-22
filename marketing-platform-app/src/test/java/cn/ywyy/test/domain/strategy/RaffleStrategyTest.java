@@ -1,4 +1,4 @@
-package cn.ywyy.test.domain;
+package cn.ywyy.test.domain.strategy;
 
 import cn.ywyy.domain.strategy.model.entity.RaffleAwardEntity;
 import cn.ywyy.domain.strategy.model.entity.RaffleFactorEntity;

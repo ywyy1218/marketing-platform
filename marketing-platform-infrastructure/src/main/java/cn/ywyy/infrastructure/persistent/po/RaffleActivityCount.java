@@ -6,7 +6,7 @@ import java.util.Date;
 
 /**
  * @author: wjx
- * @description: 抽奖活动次数配置表
+ * @description: 抽奖活动次数配置表 持久化对象
  * @create 2024/10/12 16:36
  */
 @Data
