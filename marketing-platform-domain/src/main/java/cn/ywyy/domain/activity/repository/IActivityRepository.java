@@ -1,5 +1,6 @@
 package cn.ywyy.domain.activity.repository;
 
+import cn.ywyy.domain.activity.model.aggregate.CreateOrderAggregate;
 import cn.ywyy.domain.activity.model.entity.ActivityCountEntity;
 import cn.ywyy.domain.activity.model.entity.ActivityEntity;
 import cn.ywyy.domain.activity.model.entity.ActivitySkuEntity;
@@ -32,4 +33,9 @@ public interface IActivityRepository {
      */
     ActivityCountEntity queryRaffleActivityCountByActivityCountId(Long activityCountId);
 
+    /**
+     * 保存订单操作
+     * @param createOrderAggregate 下单聚合对象
+     */
+    void doSaveOrder(CreateOrderAggregate createOrderAggregate);
 }
